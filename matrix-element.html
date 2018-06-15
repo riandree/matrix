@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="matrix-element">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `matrix-element`
+     * simple component that handles a matrix (an array of arrays i.e. &#39;rows&#39;) 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class MatrixElement extends Polymer.Element {
+      static get is() { return 'matrix-element'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'matrix-element'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(MatrixElement.is, MatrixElement);
+  </script>
+</dom-module>
