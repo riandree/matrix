@@ -10,6 +10,14 @@
       #matrix {
         display : grid;
       }
+
+      #matrix > .header {
+         cursor: var(--header-cursor,pointer);
+      }
+
+      #matrix > .cell {
+         cursor: var(--cell-cursor,pointer);
+      }
     </style>
     <h1>the matrix</h1>
     <div id="matrix" style$="grid-template-columns:{{gcols}}";>
@@ -31,6 +39,23 @@
           super();
       }
 
+      static get is() { return 'matrix-element'; }
+      static get properties() {
+        return {
+          matrix: {
+            type: Array,
+            value: [],
+            observe : this._renderMatrix
+          },
+          header : {  
+            type: Array, value : []
+          },
+          rowHeader : {  
+            type: Array, value : []
+          }
+        };
+      }
+
       ready() {
         super.ready();
 
@@ -43,55 +68,49 @@
         }
 
         this.templateClass = Polymer.Templatize.templatize(template);
+
         this._renderMatrix();
       }
 
-      static get is() { return 'matrix-element'; }
-      static get properties() {
-        return {
-          matrix: {
-            type: Array,
-            value: [  // TODO remove
-              [1,2,3],
-              [4,5,6],
-              [7,8,9]
-            ],
-            observe : this._renderMatrix
-          },
-          header : {  // TODO remove
-            type: Array,
-            value : ["colA","colB","colC"]
-          },
-          rowHeader : {  // TODO remove
-            type: Array,
-            value : ["rowA","rowB","rowC"]
-          },
-          cellAction : Function,
-          columnAction : Function,
-          rowAction : Function
-        };
-      }
+      _onGridClick(e) {
+        let row=e.target.dataset.row;
+        let col=e.target.dataset.col;
+        
+        let clickType="cell";
+        if (row < 0 && col < 0) {
+          clickType = "row-col-header";
+        } else if (row < 0) {
+          clickType = "col-header";
+        } else if (col < 0) {
+          clickType = "row-header";
+        }
 
-      _columnClicked() {}
-      _rowClicked() {}
+        this.$.matrix.dispatchEvent(new CustomEvent(`${clickType}-click`, {
+          bubbles: true,
+          composed : true,
+          detail: { row , col }
+        }));
+      }
 
       _renderMatrix() {
         if (this.header) {
           let col=-1;
           if (this.rowHeader) {
             let rowColHdr=document.createElement('header');
+            rowColHdr.classList.add("header");
             rowColHdr.dataset.row=-1;
             rowColHdr.dataset.col=col++;
-            rowColHdr.addEventListener('click',this._columnClicked.bind(this));
+            rowColHdr.addEventListener('click',this._onGridClick.bind(this));
             this.$.matrix.appendChild(rowColHdr);
           }
           // render the Grid-Header if 'header' property is set
           for(let hdr of this.header) {
             let hdrHeader=document.createElement('header');
+            hdrHeader.classList.add("header");
             hdrHeader.textContent = hdr.toString();
             hdrHeader.dataset.row=-1;
             hdrHeader.dataset.col=col++;
-            hdrHeader.addEventListener('click',this._columnClicked.bind(this));
+            hdrHeader.addEventListener('click',this._onGridClick.bind(this));
             this.$.matrix.appendChild(hdrHeader);            
           }
         }        
@@ -106,9 +125,11 @@
           gridCols = Math.max(gridCols,row.length)
           if (this.rowHeader) {
             let rowHdr=document.createElement('header');
+            rowHdr.classList.add("header");
             rowHdr.textContent=rowHeaders.shift();
             rowHdr.dataset.row=rowN;
             rowHdr.dataset.col=-1;
+            rowHdr.addEventListener('click',this._onGridClick.bind(this));
             this.$.matrix.appendChild(rowHdr);
           }
           let col=0;
@@ -116,6 +137,8 @@
             let instance = new this.templateClass({item: columnElem});
             this.$.matrix.appendChild(instance.root);
             // ToDo improve this !!!
+            this.$.matrix.lastChild.previousSibling.classList.add("cell");
+            this.$.matrix.lastChild.previousSibling.addEventListener('click',this._onGridClick.bind(this));
             this.$.matrix.lastChild.previousSibling.dataset.row=rowN;
             this.$.matrix.lastChild.previousSibling.dataset.col=col++;
           }

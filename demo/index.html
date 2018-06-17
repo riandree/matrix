@@ -16,17 +16,78 @@
       <style is="custom-style" include="demo-pages-shared-styles">
       </style>
     </custom-style>
+
+    <dom-module id="matrix-demo-element">
+      <template>
+        <style>
+          :host {
+            display: block;
+          }
+        </style>
+        <matrix-element matrix="[[matrix]]" 
+                        header="[[headers]]"
+                        row-header="[[rowHeaders]]"
+                        on-cell-click="onCellClick"
+                        on-row-col-header-click="onRowColHdrClick"
+                        on-col-header-click="onColHdrClick"
+                        on-row-header-click="onRowHdrClick"
+                        >
+            <template>
+               <span class="test">[[item]]</span>
+            </template>
+        </matrix-element>
+      </template>
+    
+      <script>
+        class MatrixDemoElement extends Polymer.Element {
+
+          constructor() {
+            super();
+
+            this.matrix=[
+              [1,2,3],
+              [4,5,6],
+              [7,8,9]
+            ];
+            this.headers=["Spalte1","Spalte2","Spalte3"];
+            this.rowHeaders=["Zeile1","Zeile2","Zeile3"];
+          }
+          
+          onCellClick(e) {
+            console.log("cell");
+            console.log(e);
+          }
+
+          onColHdrClick(e) {
+            console.log("colHdr");
+            console.log(e);
+          }
+
+          onRowHdrClick(e) {
+            console.log("rowHdr");
+            console.log(e);
+          }
+
+          onRowColHdrClick(e) {
+            console.log("rowColHdr");
+            console.log(e);
+          }
+
+          static get is() { return 'matrix-demo-element'; }
+        }
+    
+        window.customElements.define(MatrixDemoElement.is, MatrixDemoElement);
+      </script>
+    </dom-module>
+
   </head>
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic matrix-element demo</h3>
       <demo-snippet>
         <template>
-          <matrix-element>
-            <template>
-                <span class="test">[[item]]</span>
-            </template>
-          </matrix-element>
+          <matrix-demo-element>
+          </matrix-demo-element>
         </template>
       </demo-snippet>
     </div>
