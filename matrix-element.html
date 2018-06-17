@@ -9,10 +9,26 @@
 
       #matrix {
         display : grid;
+        grid-column-gap: var(--column-gap,2px);
+        grid-row-gap: var(--row-gap,2px);
+        align-items : var(--align-row,center);
+        justify-items : var(--align-col,center);
       }
 
       #matrix > .header {
          cursor: var(--header-cursor,pointer);
+      }
+
+      #matrix > .header.col {
+        background : var(--header-background,gray);
+      }
+
+      #matrix > .header.row.col {
+        background : var(--header-background,darkgray);
+      }
+
+      #matrix > .header.row {
+        background : var(--header-background,lightgray);
       }
 
       #matrix > .cell {
@@ -98,6 +114,8 @@
           if (this.rowHeader) {
             let rowColHdr=document.createElement('header');
             rowColHdr.classList.add("header");
+            rowColHdr.classList.add("col");
+            rowColHdr.classList.add("row");
             rowColHdr.dataset.row=-1;
             rowColHdr.dataset.col=col++;
             rowColHdr.addEventListener('click',this._onGridClick.bind(this));
@@ -107,6 +125,7 @@
           for(let hdr of this.header) {
             let hdrHeader=document.createElement('header');
             hdrHeader.classList.add("header");
+            hdrHeader.classList.add("col");
             hdrHeader.textContent = hdr.toString();
             hdrHeader.dataset.row=-1;
             hdrHeader.dataset.col=col++;
@@ -126,6 +145,7 @@
           if (this.rowHeader) {
             let rowHdr=document.createElement('header');
             rowHdr.classList.add("header");
+            rowHdr.classList.add("row");
             rowHdr.textContent=rowHeaders.shift();
             rowHdr.dataset.row=rowN;
             rowHdr.dataset.col=-1;
