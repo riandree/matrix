@@ -65,20 +65,33 @@
           rowHeader : {  // TODO remove
             type: Array,
             value : ["rowA","rowB","rowC"]
-          }
+          },
+          cellAction : Function,
+          columnAction : Function,
+          rowAction : Function
         };
       }
 
+      _columnClicked() {}
+      _rowClicked() {}
+
       _renderMatrix() {
         if (this.header) {
+          let col=-1;
           if (this.rowHeader) {
             let rowColHdr=document.createElement('header');
+            rowColHdr.dataset.row=-1;
+            rowColHdr.dataset.col=col++;
+            rowColHdr.addEventListener('click',this._columnClicked.bind(this));
             this.$.matrix.appendChild(rowColHdr);
           }
           // render the Grid-Header if 'header' property is set
           for(let hdr of this.header) {
             let hdrHeader=document.createElement('header');
             hdrHeader.textContent = hdr.toString();
+            hdrHeader.dataset.row=-1;
+            hdrHeader.dataset.col=col++;
+            hdrHeader.addEventListener('click',this._columnClicked.bind(this));
             this.$.matrix.appendChild(hdrHeader);            
           }
         }        
@@ -88,18 +101,25 @@
         // ToDo bei unterschiedlich langen Rows bis auf gleiche Länge auffüllen
         // auch im Header
         let rowHeaders = Object.assign([],this.rowHeader);
+        let rowN=0; 
         for(let row of this.matrix) {
           gridCols = Math.max(gridCols,row.length)
           if (this.rowHeader) {
             let rowHdr=document.createElement('header');
             rowHdr.textContent=rowHeaders.shift();
+            rowHdr.dataset.row=rowN;
+            rowHdr.dataset.col=-1;
             this.$.matrix.appendChild(rowHdr);
           }
+          let col=0;
           for(let columnElem of row) {
             let instance = new this.templateClass({item: columnElem});
-            let cellDiv=document.createElement('div');
             this.$.matrix.appendChild(instance.root);
+            // ToDo improve this !!!
+            this.$.matrix.lastChild.previousSibling.dataset.row=rowN;
+            this.$.matrix.lastChild.previousSibling.dataset.col=col++;
           }
+          rowN+=1; 
         }
         this.gcols="1fr ".repeat(this.rowHeader ? gridCols+1 : gridCols);
       }
