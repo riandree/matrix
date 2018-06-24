@@ -36,6 +36,25 @@
                <span class="test">[[item]]</span>
             </template>
         </matrix-element>
+        <hr>
+        <matrix-element matrix="[[bool_matrix]]" 
+                        header="[[bool_hdrs]]"
+                        row-header="[[bool_rows]]"
+                        on-cell-click="onCellClick"
+                        on-row-col-header-click="onRowColHdrClick"
+                        on-col-header-click="onColHdrClick"
+                        on-row-header-click="onRowHdrClick"
+                        >
+            <template role="cell">
+              <span>[[item]]</span>
+            </template>
+            <template role="col">
+              <span>[[item]]</span>
+            </template>
+            <template role="row">
+              <span>[[item]]</span>
+            </template>
+        </matrix-element>
       </template>
     
       <script>
@@ -51,8 +70,25 @@
             ];
             this.headers=["Spalte1","Spalte2","Spalte3"];
             this.rowHeaders=["Zeile1","Zeile2","Zeile3"];
+            
+            this.bool_matrix = [];
+            this.bool_hdrs = [];
+            this.bool_rows = ["Mo","Di","Mi","Do","Fr","Sa","So"];
+            for(let i=0; i<12; i++) {
+                let row=[];
+                this.bool_hdrs.push(i);
+                for(let j=1;j<=this.bool_rows.length;j++) {
+                  row.push(this._flipCoin());
+                }
+                this.bool_matrix.push(row);
+            }
+            
           }
           
+          _flipCoin() {
+             return Math.round() < 0.5;
+          }
+
           onCellClick(e) {
             console.log("cell");
             console.log(e);

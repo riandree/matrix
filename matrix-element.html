@@ -9,10 +9,11 @@
 
       #matrix {
         display : grid;
-        grid-column-gap: var(--column-gap,2px);
-        grid-row-gap: var(--row-gap,2px);
-        align-items : var(--align-row,center);
-        justify-items : var(--align-col,center);
+        grid-gap: var(--row-gap,2px) var(--column-gap,2px);
+        align-items : var(--align-items,center);
+        justify-items : var(--justify-items,center);
+        justify-content: var(--justify-content,stretch);
+        align-content: var(--align-content,stretch);
       }
 
       #matrix > .header {
@@ -35,7 +36,6 @@
          cursor: var(--cell-cursor,pointer);
       }
     </style>
-    <h1>the matrix</h1>
     <div id="matrix" style$="grid-template-columns:{{gcols}}";>
     </div>
   </template>
@@ -76,14 +76,26 @@
         super.ready();
 
         let template = null;
+        let rowTemplate = null;
+        let colTemplate = null;
         if (this.children.length > 0 && 
             this.children[0] instanceof HTMLTemplateElement){
-          template = this.children[0];
-        } else {
-          console.error("First LightDOM child of <matrix-element> needs to be a <template>");
-        }
+          if (this.children.length == 1) {
+            template = this.children[0];
+          } else {
+            template = this.querySelector("[role=cell]");
+            rowTemplate = this.querySelector("[role=row]");
+            colTemplate = this.querySelector("[role=col]");
+          }
+        } 
 
         this.templateClass = Polymer.Templatize.templatize(template);
+        if (rowTemplate) {
+          this.rowTemplateClass = Polymer.Templatize.templatize(rowTemplate);
+        }
+        if (colTemplate) {
+          this.colTemplateClass = Polymer.Templatize.templatize(colTemplate);
+        }
 
         this._renderMatrix();
       }
