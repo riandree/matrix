@@ -11,7 +11,7 @@
         display : grid;
         grid-gap: var(--row-gap,2px) var(--column-gap,2px);
         align-items : var(--align-items,center);
-        justify-items : var(--justify-items,center);
+        justify-items : var(--justify-items,stretch);
         justify-content: var(--justify-content,stretch);
         align-content: var(--align-content,stretch);
       }
@@ -21,15 +21,18 @@
       }
 
       #matrix > .header.col {
-        background : var(--header-background,gray);
+        background : var(--col-header-background,gray);
+        color : var(--col-header-color,black);
       }
 
       #matrix > .header.row.col {
         background : var(--header-background,darkgray);
+        color : var(--header-color,black);
       }
 
       #matrix > .header.row {
-        background : var(--header-background,lightgray);
+        background : var(--row-header-background,lightgray);
+        color : var(--row-header-color,black);
       }
 
       #matrix > .cell {
@@ -206,13 +209,6 @@
               item : columnElem,
               classes : ['cell']
             });
-//            let instance = new this.templateClass({item: columnElem});
-//            this.$.matrix.appendChild(instance.root);
-            // ToDo improve this !!!
-//            this.$.matrix.lastChild.previousSibling.classList.add("cell");
-//            this.$.matrix.lastChild.previousSibling.addEventListener('click',this._onGridClick.bind(this));
-//            this.$.matrix.lastChild.previousSibling.dataset.row=rowN;
-//            this.$.matrix.lastChild.previousSibling.dataset.col=col++;
           }
           rowN+=1; 
         }
