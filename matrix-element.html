@@ -120,34 +120,68 @@
         }));
       }
 
+      _appendTextHeaderElement (params) {
+            let hdrEl = document.createElement("span");
+            for(let clazz of params.classes) {
+              hdrEl.classList.add(clazz);
+            }
+            if (params.text) {
+              hdrEl.textContent = params.text;
+            }
+            hdrEl.dataset.row=params.row;
+            hdrEl.dataset.col=params.col;
+            hdrEl.addEventListener('click',this._onGridClick.bind(this));
+            this.$.matrix.appendChild(hdrEl);
+      };
+
+      _appendTemplate(params) {
+        let instance = new params.template({item: params.item});
+        this.$.matrix.appendChild(instance.root);        
+       
+        // ToDo improve this !!!
+        for(let clazz of params.classes) {
+           this.$.matrix.lastChild.previousSibling.classList.add(clazz);
+        }
+        this.$.matrix.lastChild.previousSibling.addEventListener('click',this._onGridClick.bind(this));
+        this.$.matrix.lastChild.previousSibling.dataset.row=params.row;
+        this.$.matrix.lastChild.previousSibling.dataset.col=params.col;
+      }
+
+      _appendHeader(params) {
+        params.classes.push('header');
+        if (params.template) {
+          this._appendTemplate(params); 
+        } else {
+          params.text = params.item.toString(),
+          this._appendTextHeaderElement(params);
+        }
+      }
+
       _renderMatrix() {
         if (this.header) {
           let col=-1;
           if (this.rowHeader) {
-            let rowColHdr=document.createElement('header');
-            rowColHdr.classList.add("header");
-            rowColHdr.classList.add("col");
-            rowColHdr.classList.add("row");
-            rowColHdr.dataset.row=-1;
-            rowColHdr.dataset.col=col++;
-            rowColHdr.addEventListener('click',this._onGridClick.bind(this));
-            this.$.matrix.appendChild(rowColHdr);
+            this._appendHeader({
+              classes : ['col','row'],
+              item : "",
+              row : -1,
+              col : col++
+            });
           }
           // render the Grid-Header if 'header' property is set
           for(let hdr of this.header) {
-            let hdrHeader=document.createElement('header');
-            hdrHeader.classList.add("header");
-            hdrHeader.classList.add("col");
-            hdrHeader.textContent = hdr.toString();
-            hdrHeader.dataset.row=-1;
-            hdrHeader.dataset.col=col++;
-            hdrHeader.addEventListener('click',this._onGridClick.bind(this));
-            this.$.matrix.appendChild(hdrHeader);            
+            this._appendHeader({
+              classes : ['col'],
+              item : hdr,
+              template : this.colTemplateClass,
+              row : -1,
+              col : col++
+            });
           }
         }        
 
         let gridCols = 0;
-        
+
         // ToDo bei unterschiedlich langen Rows bis auf gleiche Länge auffüllen
         // auch im Header
         let rowHeaders = Object.assign([],this.rowHeader);
@@ -155,24 +189,30 @@
         for(let row of this.matrix) {
           gridCols = Math.max(gridCols,row.length)
           if (this.rowHeader) {
-            let rowHdr=document.createElement('header');
-            rowHdr.classList.add("header");
-            rowHdr.classList.add("row");
-            rowHdr.textContent=rowHeaders.shift();
-            rowHdr.dataset.row=rowN;
-            rowHdr.dataset.col=-1;
-            rowHdr.addEventListener('click',this._onGridClick.bind(this));
-            this.$.matrix.appendChild(rowHdr);
+            this._appendHeader({
+              classes : ['row'],
+              item : rowHeaders.shift(),
+              template : this.rowTemplateClass,
+              row : rowN,
+              col : -1
+            });
           }
           let col=0;
           for(let columnElem of row) {
-            let instance = new this.templateClass({item: columnElem});
-            this.$.matrix.appendChild(instance.root);
+            this._appendTemplate({
+              template : this.templateClass,
+              row : rowN,
+              col : col++,
+              item : columnElem,
+              classes : ['cell']
+            });
+//            let instance = new this.templateClass({item: columnElem});
+//            this.$.matrix.appendChild(instance.root);
             // ToDo improve this !!!
-            this.$.matrix.lastChild.previousSibling.classList.add("cell");
-            this.$.matrix.lastChild.previousSibling.addEventListener('click',this._onGridClick.bind(this));
-            this.$.matrix.lastChild.previousSibling.dataset.row=rowN;
-            this.$.matrix.lastChild.previousSibling.dataset.col=col++;
+//            this.$.matrix.lastChild.previousSibling.classList.add("cell");
+//            this.$.matrix.lastChild.previousSibling.addEventListener('click',this._onGridClick.bind(this));
+//            this.$.matrix.lastChild.previousSibling.dataset.row=rowN;
+//            this.$.matrix.lastChild.previousSibling.dataset.col=col++;
           }
           rowN+=1; 
         }

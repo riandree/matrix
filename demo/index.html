@@ -49,10 +49,10 @@
               <span>[[item]]</span>
             </template>
             <template role="col">
-              <span>[[item]]</span>
+              <h2>[[item]]</h2>
             </template>
             <template role="row">
-              <span>[[item]]</span>
+              <h3>[[item]]</h3>
             </template>
         </matrix-element>
       </template>
@@ -72,12 +72,11 @@
             this.rowHeaders=["Zeile1","Zeile2","Zeile3"];
             
             this.bool_matrix = [];
-            this.bool_hdrs = [];
+            this.bool_hdrs = Array.from(Array(24).keys());
             this.bool_rows = ["Mo","Di","Mi","Do","Fr","Sa","So"];
-            for(let i=0; i<12; i++) {
+            for(let i=0; i<7; i++) {
                 let row=[];
-                this.bool_hdrs.push(i);
-                for(let j=1;j<=this.bool_rows.length;j++) {
+                for(let j=1;j<=this.bool_hdrs.length;j++) {
                   row.push(this._flipCoin());
                 }
                 this.bool_matrix.push(row);
@@ -86,7 +85,7 @@
           }
           
           _flipCoin() {
-             return Math.round() < 0.5;
+             return Math.random() < 0.5;
           }
 
           onCellClick(e) {
