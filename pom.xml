@@ -33,14 +33,6 @@
                         <goals><goal>run</goal></goals>
                         <configuration>
                             <target>
-                                <!--echo message="polymer install"/>                               
-                                <exec executable="/usr/local/bin/polymer">
-                                  <arg value="install"/>
-                                </exec>
-                                <echo message="polymer build"/>                               
-                                <exec executable="/usr/local/bin/polymer">
-                                  <arg value="build"/>
-                                </exec-->
                                 <echo message="create target dir"/>                               
                                 <exec executable="/bin/mkdir">
                                   <arg value="-p"/>
