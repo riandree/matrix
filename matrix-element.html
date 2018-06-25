@@ -40,6 +40,11 @@
       }
     </style>
     <div id="matrix" style$="grid-template-columns:{{gcols}}";>
+       <template is="dom-if" if="[[errormsg]]">
+         <div>
+           [[errormsg]]
+         </div>
+       </template>
     </div>
   </template>
 
@@ -92,15 +97,20 @@
           }
         } 
 
-        this.templateClass = Polymer.Templatize.templatize(template);
-        if (rowTemplate) {
-          this.rowTemplateClass = Polymer.Templatize.templatize(rowTemplate);
-        }
-        if (colTemplate) {
-          this.colTemplateClass = Polymer.Templatize.templatize(colTemplate);
-        }
+        if (this.templateClass) {      
+          this.templateClass = Polymer.Templatize.templatize(template);
+          if (rowTemplate) {
+            this.rowTemplateClass = Polymer.Templatize.templatize(rowTemplate);
+          }
+          if (colTemplate) {
+            this.colTemplateClass = Polymer.Templatize.templatize(colTemplate);
+          }
 
-        this._renderMatrix();
+          this._renderMatrix();
+        } else {
+          console.error("<matrix-element> no template defined for cell content.");
+          this.errormsg="<matrix-element> no template defined for cell content.";
+        }
       }
 
       _onGridClick(e) {
