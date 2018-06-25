@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+    
+    <packaging>jar</packaging>
+    <groupId>de.riandree</groupId>
+    <artifactId>matrix-webjar</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>matrix-webjar</name>
+    <description>polymer.js 2.0 matrix element</description>
+    <url>https://github.com/riandree/matrix</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</destDir>
+    </properties>
+       
+    <build>
+        <plugins>
+                <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals><goal>run</goal></goals>
+                        <configuration>
+                            <target>
+                                <!--echo message="polymer install"/>                               
+                                <exec executable="/usr/local/bin/polymer">
+                                  <arg value="install"/>
+                                </exec>
+                                <echo message="polymer build"/>                               
+                                <exec executable="/usr/local/bin/polymer">
+                                  <arg value="build"/>
+                                </exec-->
+                                <echo message="create target dir"/>                               
+                                <exec executable="/bin/mkdir">
+                                  <arg value="-p"/>
+                                  <arg value="${project.build.directory}/${project.artifactId}"/>
+                                </exec>
+                                <copy file="matrix-element.html" todir="${destDir}"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
