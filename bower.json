@@ -1,5 +1,6 @@
 {
   "name": "matrix-element",
+  "version": "0.0.1",
   "description": "simple component that handles a matrix (an array of arrays i.e. &#39;rows&#39;) ",
   "main": "matrix-element.html",
   "dependencies": {
