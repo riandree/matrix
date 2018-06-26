@@ -61,6 +61,8 @@
 
       constructor() {
           super();
+          // ToDo Use DOM3 MutationObserver instead
+          this.addEventListener("DOMNodeInserted", this._fetchContentTemplates.bind(this));
       }
 
       static get is() { return 'matrix-element'; }
@@ -72,45 +74,57 @@
             observe : this._renderMatrix
           },
           header : {  
-            type: Array, value : []
+            type: Array
           },
           rowHeader : {  
-            type: Array, value : []
+            type: Array
           }
         };
       }
 
+      _fetchContentTemplates() {
+
+          console.log("DOMNodeInserted");
+          let template = null;
+          let rowTemplate = null;
+          let colTemplate = null;
+          console.log("childcount"+this.children.length);
+          console.log({ x : this.children[0]});
+          if (this.children.length > 0 && 
+            this.children[0] instanceof HTMLTemplateElement){
+              console.log("querying templates");
+              if (this.children.length == 1) {
+                console.log("one child");
+                template = this.children[0];
+              } else {
+                template = this.querySelector("[role=cell]");
+                rowTemplate = this.querySelector("[role=row]");
+                colTemplate = this.querySelector("[role=col]");
+              }
+          }   
+
+          console.log("template is");
+          console.log({ template});
+
+          if (template) {      
+            this.templateClass = Polymer.Templatize.templatize(template);
+            if (rowTemplate) {
+              this.rowTemplateClass = Polymer.Templatize.templatize(rowTemplate);
+            }
+            if (colTemplate) {
+              this.colTemplateClass = Polymer.Templatize.templatize(colTemplate);
+            }
+
+            this._renderMatrix();
+          } else {
+            console.error("<matrix-element> no template defined for cell content.");
+//            this.errormsg="<matrix-element> no template defined for cell content.";
+          }
+      }
+
       ready() {
         super.ready();
-
-        let template = null;
-        let rowTemplate = null;
-        let colTemplate = null;
-        if (this.children.length > 0 && 
-            this.children[0] instanceof HTMLTemplateElement){
-          if (this.children.length == 1) {
-            template = this.children[0];
-          } else {
-            template = this.querySelector("[role=cell]");
-            rowTemplate = this.querySelector("[role=row]");
-            colTemplate = this.querySelector("[role=col]");
-          }
-        } 
-
-        if (this.templateClass) {      
-          this.templateClass = Polymer.Templatize.templatize(template);
-          if (rowTemplate) {
-            this.rowTemplateClass = Polymer.Templatize.templatize(rowTemplate);
-          }
-          if (colTemplate) {
-            this.colTemplateClass = Polymer.Templatize.templatize(colTemplate);
-          }
-
-          this._renderMatrix();
-        } else {
-          console.error("<matrix-element> no template defined for cell content.");
-          this.errormsg="<matrix-element> no template defined for cell content.";
-        }
+        this._fetchContentTemplates();
       }
 
       _onGridClick(e) {
@@ -148,16 +162,17 @@
       };
 
       _appendTemplate(params) {
-        let instance = new params.template({item: params.item});
-        this.$.matrix.appendChild(instance.root);        
-       
-        // ToDo improve this !!!
+        let wrapper=document.createElement("div");
         for(let clazz of params.classes) {
-           this.$.matrix.lastChild.previousSibling.classList.add(clazz);
+          wrapper.classList.add(clazz);
         }
-        this.$.matrix.lastChild.previousSibling.addEventListener('click',this._onGridClick.bind(this));
-        this.$.matrix.lastChild.previousSibling.dataset.row=params.row;
-        this.$.matrix.lastChild.previousSibling.dataset.col=params.col;
+        wrapper.addEventListener('click',this._onGridClick.bind(this));
+        wrapper.dataset.row=params.row;
+        wrapper.dataset.col=params.col;
+        
+        let instance = new params.template({item: params.item});
+        wrapper.appendChild(instance.root);
+        this.$.matrix.appendChild(wrapper);        
       }
 
       _appendHeader(params) {
@@ -171,6 +186,8 @@
       }
 
       _renderMatrix() {
+console.log("_renderMatrix");
+
         if (this.header) {
           let col=-1;
           if (this.rowHeader) {
