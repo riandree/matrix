@@ -71,7 +71,7 @@
           matrix: {
             type: Array,
             value: [],
-            observe : this._renderMatrix
+            observer : '_renderMatrix'
           },
           header : {  
             type: Array
@@ -115,6 +115,7 @@
               this.colTemplateClass = Polymer.Templatize.templatize(colTemplate);
             }
 
+            this.initialised=true;
             this._renderMatrix();
           } else {
             console.error("<matrix-element> no template defined for cell content.");
@@ -128,9 +129,15 @@
       }
 
       _onGridClick(e) {
-        let row=e.target.dataset.row;
-        let col=e.target.dataset.col;
+        let row=e.currentTarget.dataset.row;
+        let col=e.currentTarget.dataset.col;
         
+console.log("e.currentTarger.outerHTML e.target.outerHTML this.outerHTML --> ");
+console.log(e.currentTarget.outerHTML);
+console.log(e.target.outerHTML);
+console.log(this.outerHTML);
+console.log(JSON.stringify(e.target.dataset));
+
         let clickType="cell";
         if (row < 0 && col < 0) {
           clickType = "row-col-header";
@@ -186,7 +193,15 @@
       }
 
       _renderMatrix() {
+        if (!this.initialised) {
+          console.log("not initialised _renderMatrix");
+          return;
+        }
 console.log("_renderMatrix");
+
+        while(this.$.matrix.firstChild) {
+          this.$.matrix.firstChild.remove();
+        } 
 
         if (this.header) {
           let col=-1;

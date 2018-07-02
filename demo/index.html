@@ -41,7 +41,7 @@
         </matrix-element>
         <hr>
         <matrix-element id="matrix"
-                        matrix="[[bool_matrix]]" 
+                        matrix="{{bool_matrix}}" 
                         header="[[bool_hdrs]]"
                         row-header="[[bool_rows]]"
                         on-cell-click="onCellClick"
@@ -68,8 +68,21 @@
         </matrix-element>
       </template>
     
+      
       <script>
         class MatrixDemoElement extends Polymer.Element {
+
+         static get properties() {
+           return {
+            bool_matrix : {
+              type : Array,
+              notify : true,
+              observer : function() {
+                  console.log("boolMatrix changed");
+              }
+            }
+           };
+         }
 
           constructor() {
             super();
@@ -94,6 +107,17 @@
             }
             
             // setTimeout(() => location.reload(),500);
+            this.onColHdrClick = (e) => {
+              console.log("onColHdrClick ");
+              console.log(JSON.stringify(this.bool_matrix));
+              for(let i=0;i<this.bool_matrix.length;i++) {
+                let row=Object.assign([],this.bool_matrix[i]);
+                row[e.detail.col]=!row[e.detail.col];
+                this.bool_matrix[i]=row;
+              }
+              this.bool_matrix = Object.assign([],this.bool_matrix);
+              console.log(JSON.stringify(this.bool_matrix));
+            };
           }
           
           _flipCoin() {
@@ -101,19 +125,14 @@
           }
 
           onCellClick(e) {
-            console.log("cell");
-            console.log(e);
           }
 
-          onColHdrClick(e) {
-            console.log("colHdr");
-            console.log(e);
-            for(let row of this.bool_matrix) {
-              row[e.detail.col]=!row[e.detail.col];
-            }
-            this.bool_matrix = Object.assign([],this.bool_matrix);
-            this.notifyPath("bool_matrix");
-          }
+          // _onColHdrClick(e) {
+          //   for(let row of this.bool_matrix) {
+          //     row[e.detail.col]=!row[e.detail.col];
+          //   }
+          //   this.bool_matrix = Object.assign([],this.bool_matrix);
+          // }
 
           onRowHdrClick(e) {
             console.log("rowHdr");
