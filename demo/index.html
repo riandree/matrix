@@ -45,7 +45,6 @@
                         header="[[bool_hdrs]]"
                         row-header="[[bool_rows]]"
                         on-cell-click="onCellClick"
-                        on-row-col-header-click="onRowColHdrClick"
                         on-col-header-click="onColHdrClick"
                         on-row-header-click="onRowHdrClick"
                         >
@@ -76,10 +75,7 @@
            return {
             bool_matrix : {
               type : Array,
-              notify : true,
-              observer : function() {
-                  console.log("boolMatrix changed");
-              }
+              notify : true
             }
            };
          }
@@ -106,42 +102,37 @@
                 this.bool_matrix.push(row);
             }
             
-            // setTimeout(() => location.reload(),500);
             this.onColHdrClick = (e) => {
-              console.log("onColHdrClick ");
-              console.log(JSON.stringify(this.bool_matrix));
               for(let i=0;i<this.bool_matrix.length;i++) {
                 let row=Object.assign([],this.bool_matrix[i]);
                 row[e.detail.col]=!row[e.detail.col];
                 this.bool_matrix[i]=row;
               }
               this.bool_matrix = Object.assign([],this.bool_matrix);
-              console.log(JSON.stringify(this.bool_matrix));
             };
+
+            this.onRowHdrClick = (e) => {
+              console.log("onRowHdrClick");
+              let row=[];
+              for(let cell of this.bool_matrix[e.detail.row]) {
+                row.push(!cell);
+              }
+              console.dir(row);
+              this.splice('bool_matrix',e.detail.row,1,row);
+              this.bool_matrix = Object.assign([],this.bool_matrix);
+            };
+
+            this.onCellClick = (e) => {
+              let row=Object.assign([],this.bool_matrix[e.detail.row]);
+              row[e.detail.col]=!row[e.detail.col];
+              this.bool_matrix[e.detail.row]=row;
+              this.bool_matrix = Object.assign([],this.bool_matrix);
+            };
+
           }
           
           _flipCoin() {
              return Math.random() < 0.5;
-          }
-
-          onCellClick(e) {
-          }
-
-          // _onColHdrClick(e) {
-          //   for(let row of this.bool_matrix) {
-          //     row[e.detail.col]=!row[e.detail.col];
-          //   }
-          //   this.bool_matrix = Object.assign([],this.bool_matrix);
-          // }
-
-          onRowHdrClick(e) {
-            console.log("rowHdr");
-            console.log(e);
-          }
-
-          onRowColHdrClick(e) {
-            console.log("rowColHdr");
-            console.log(e);
           }
 
           static get is() { return 'matrix-demo-element'; }

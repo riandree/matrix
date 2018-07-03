@@ -84,17 +84,12 @@
 
       _fetchContentTemplates() {
 
-          console.log("DOMNodeInserted");
           let template = null;
           let rowTemplate = null;
           let colTemplate = null;
-          console.log("childcount"+this.children.length);
-          console.log({ x : this.children[0]});
           if (this.children.length > 0 && 
             this.children[0] instanceof HTMLTemplateElement){
-              console.log("querying templates");
               if (this.children.length == 1) {
-                console.log("one child");
                 template = this.children[0];
               } else {
                 template = this.querySelector("[role=cell]");
@@ -102,9 +97,6 @@
                 colTemplate = this.querySelector("[role=col]");
               }
           }   
-
-          console.log("template is");
-          console.log({ template});
 
           if (template) {      
             this.templateClass = Polymer.Templatize.templatize(template);
@@ -119,7 +111,6 @@
             this._renderMatrix();
           } else {
             console.error("<matrix-element> no template defined for cell content.");
-//            this.errormsg="<matrix-element> no template defined for cell content.";
           }
       }
 
@@ -132,12 +123,6 @@
         let row=e.currentTarget.dataset.row;
         let col=e.currentTarget.dataset.col;
         
-console.log("e.currentTarger.outerHTML e.target.outerHTML this.outerHTML --> ");
-console.log(e.currentTarget.outerHTML);
-console.log(e.target.outerHTML);
-console.log(this.outerHTML);
-console.log(JSON.stringify(e.target.dataset));
-
         let clickType="cell";
         if (row < 0 && col < 0) {
           clickType = "row-col-header";
@@ -194,10 +179,8 @@ console.log(JSON.stringify(e.target.dataset));
 
       _renderMatrix() {
         if (!this.initialised) {
-          console.log("not initialised _renderMatrix");
           return;
         }
-console.log("_renderMatrix");
 
         while(this.$.matrix.firstChild) {
           this.$.matrix.firstChild.remove();
