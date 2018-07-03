@@ -9,8 +9,8 @@
 
       #matrix {
         display : grid;
-        grid-gap: var(--row-gap,2px) var(--column-gap,2px);
-        align-items : var(--align-items,center);
+        grid-gap: var(--row-gap,4px) var(--column-gap,4px);
+        align-items : var(--align-items,stretch);
         justify-items : var(--justify-items,stretch);
         justify-content: var(--justify-content,stretch);
         align-content: var(--align-content,stretch);
@@ -37,6 +37,7 @@
 
       #matrix > .cell {
          cursor: var(--cell-cursor,pointer);
+         height: 100%;
       }
     </style>
     <div id="matrix" style$="grid-template-columns:{{gcols}}";>
