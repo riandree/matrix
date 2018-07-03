@@ -13,7 +13,7 @@
     <artifactId>matrix-webjar</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>matrix-webjar</name>
-    <description>polymer.js 2.0 matrix element</description>
+    <description>Build webjar for polymer.js 2.0 matrix element</description>
     <url>https://github.com/riandree/matrix</url>
 
     <properties>
